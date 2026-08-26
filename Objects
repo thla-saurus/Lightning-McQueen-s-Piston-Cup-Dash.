@@ -1,7 +1,7 @@
 import random
 import pygame
 
-# Game Configuration & Constants 
+# Game Configuration & Constants
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 NUM_LANES = 4
@@ -11,7 +11,7 @@ LANE_WIDTH = int(SCREEN_WIDTH / NUM_LANES)
 ITEM_WIDTH = 40
 ITEM_HEIGHT = 40
 ITEM_SPEED = 5
-SPAWN_INTERVAL = 60  # Frames between each new spawn
+SPAWN_INTERVAL = 60  # Frames between each new spawn (FPS)
 
 # Colors (RGB)
 COLOR_OBSTACLE = (200, 0, 0)  # Red
