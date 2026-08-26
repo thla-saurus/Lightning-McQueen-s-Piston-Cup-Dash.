@@ -2,9 +2,9 @@ import random
 import pygame
 
 # Game Configuration & Constants
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 600
-NUM_LANES = 4
+SCREEN_WIDTH = 480
+SCREEN_HEIGHT = 800
+NUM_LANES = 6
 LANE_WIDTH = int(SCREEN_WIDTH / NUM_LANES)
 
 # Item (Obstacle / Nitro) Properties
@@ -27,7 +27,7 @@ class GameObject:
     self.item_type = item_type
 
     # Determine horizontal (X) position at the center of the lane using global constants
-    self.x = ( (lane_index * LANE_WIDTH) + (LANE_WIDTH // 2) - (ITEM_WIDTH // 2) )
+    self.x = (lane_index * LANE_WIDTH) + (LANE_WIDTH // 2) - (ITEM_WIDTH // 2)
     self.y = -ITEM_HEIGHT  # Start spawning from above the screen boundary
 
     self.width = ITEM_WIDTH
