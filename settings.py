@@ -1,4 +1,4 @@
-class Setting:
+class Settings:
     def __init__(self):
         self.SCREEN_WIDTH = 480
         self.SCREEN_HEIGHT = 800

@@ -1,1 +1,1 @@
-from obstacles import Obstacle
+from game_objects import Obstacle

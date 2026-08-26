@@ -12,28 +12,24 @@ SPAWN_INTERVAL = 60  # Frames between each new spawn (FPS)
 COLOR_NITRO = (0, 200, 255)  # Light Blue
 
 
-class Obstacle:
+class GameObject(Sprite):
 
   def __init__(self, lane_index, item_type ,game):
     # Initialize obstacle or nitro power-up item.
     # item_type: 'obstacle' or 'nitro'
+    super().__init__()
+    self.window = game.window
     self.settings = game.settings
     self.lane_index = lane_index
     self.item_type = item_type
-    self.images = ["assets/oil1.bmp","assets/oil2.bmp","assets/tire.bmp"]
-    for i,img in enumerate(self.images):
-      self.images[i] = self._setup_img(img)
-    self.rect = self
+
+    self.image = choice(game.assets.images)
     self.x = (lane_index * self.settings.LANE_WIDTH) + (self.settings.LANE_WIDTH // 2) - (ITEM_WIDTH // 2)
     self.y = -ITEM_HEIGHT  # Start spawning from above the screen boundary
 
     self.width = ITEM_WIDTH
     self.height = ITEM_HEIGHT
     self.speed = ITEM_SPEED
-  def _setup_img(self,img):
-    image  = pygame.image.load(img)
-    #image  = pygame.transform.scale(image, (60,25))
-    return image
 
   def update(self):
     # Update the vertical position of the item to move it downwards
@@ -42,14 +38,16 @@ class Obstacle:
   def draw_object(self):
     # Render the game object on the screen
     if self.item_type == "obstacle":
-      img  =  choice([self.images])
-      img_rect = img.get_rect()
-      self.screen.blit(img,img_rect)
+      
+      img_rect = self.image.get_rect()
+      img_rect.x = self.x
+      img_rect.y = self.y
+      self.window.blit(self.image,img_rect)
 
     else:
       # Draw nitro power-up using global color and dimensions
       pygame.draw.rect(
-          screen, COLOR_NITRO, (self.x, self.y, self.width, self.height)
+          self.window, COLOR_NITRO, (self.x, self.y, self.width, self.height)
       )
 
   def check_collision(self, player_rect):
