@@ -1,7 +1,7 @@
 import random
 import pygame
 
-# === Game Configuration & Constants ===
+# Game Configuration & Constants 
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 NUM_LANES = 4
