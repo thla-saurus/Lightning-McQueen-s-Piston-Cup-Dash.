@@ -1,0 +1,60 @@
+import random
+import pygame
+
+# === Game Configuration & Constants ===
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 600
+NUM_LANES = 4
+LANE_WIDTH = int(SCREEN_WIDTH / NUM_LANES)
+
+# Item (Obstacle / Nitro) Properties
+ITEM_WIDTH = 40
+ITEM_HEIGHT = 40
+ITEM_SPEED = 5
+SPAWN_INTERVAL = 60  # Frames between each new spawn
+
+# Colors (RGB)
+COLOR_OBSTACLE = (200, 0, 0)  # Red
+COLOR_NITRO = (0, 200, 255)  # Light Blue
+
+
+class GameObject:
+
+  def __init__(self, lane_index, item_type):
+    # Initialize obstacle or nitro power-up item.
+    # item_type: 'obstacle' or 'nitro'
+    self.lane_index = lane_index
+    self.item_type = item_type
+
+    # Determine horizontal (X) position at the center of the lane using global constants
+    self.x = ( (lane_index * LANE_WIDTH) + (LANE_WIDTH // 2) - (ITEM_WIDTH // 2) )
+    self.y = -ITEM_HEIGHT  # Start spawning from above the screen boundary
+
+    self.width = ITEM_WIDTH
+    self.height = ITEM_HEIGHT
+    self.speed = ITEM_SPEED
+
+  def update(self):
+    # Update the vertical position of the item to move it downwards
+    self.y += self.speed
+
+  def draw(self, screen):
+    # Render the game object on the screen
+    if self.item_type == "obstacle":
+      # Draw obstacle using global color and dimensions
+      pygame.draw.rect(
+          screen, COLOR_OBSTACLE, (self.x, self.y, self.width, self.height)
+      )
+    else:
+      # Draw nitro power-up using global color and dimensions
+      pygame.draw.rect(
+          screen, COLOR_NITRO, (self.x, self.y, self.width, self.height)
+      )
+
+  def check_collision(self, player_rect):
+    # Check if this item collides with the player's rectangle
+    # Creates a Pygame Rect for the current item
+    item_rect = pygame.Rect(self.x, self.y, self.width, self.height)
+
+    # colliderect returns True if the two rectangles overlap (collide), False otherwise
+    return item_rect.colliderect(player_rect)
