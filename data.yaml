@@ -1,0 +1,8 @@
+train: C:\Users\ziade\Desktop\computer_vision\train
+val: C:\Users\ziade\Desktop\computer_vision\validation  
+
+# Classes
+nc: 2 # number of classes
+names:
+  0: peace_sign
+  1: open_balm
