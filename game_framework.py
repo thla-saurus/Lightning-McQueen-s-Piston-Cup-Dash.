@@ -51,12 +51,13 @@ class Game:
         # Initialize the lane and McQueen systems here.
 
         self.obstacles = pygame.sprite.Group()
-        self.spawn_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.spawn_event,500)
+        self.spawn_obstacle_event = pygame.USEREVENT + 1
+        pygame.time.set_timer(self.spawn_obstacle_event,1000)
 
 
-        # [NITRO]
-        # Initialize the Nitro system here.
+        self.nitros = pygame.sprite.Group()
+        self.spawn_power_up_event = pygame.USEREVENT + 2
+        pygame.time.set_timer(self.spawn_power_up_event,3000)
 
         # [COLLISION]
         # Initialize the collision system here.
@@ -82,8 +83,10 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.running = False
-            if event.type == self.spawn_event:
+            if event.type == self.spawn_obstacle_event:
                 self.obstacles.add(GameObject(random.randint(0,5),"obstacle",self))
+            if event.type == self.spawn_power_up_event:
+                self.nitros.add(GameObject(random.randint(0,5),"power_up",self))
 
     # continously update game (car speed, number of lanes, which lane it's in, obstacles, nitro, lifes)
     def update(self, dt):
@@ -103,14 +106,17 @@ class Game:
         # Update McQueen's position.
 
         for ob in self.obstacles:
-            ob.update()
+            if ob.check_reach_edge():
+                self.obstacles.remove(ob)
+            else:
+                ob.update()
 
-        # =========================================================
-        # NITRO
-        # =========================================================
-        # [NITRO TEAM]
-        # Update Nitro objects and their movement.
-
+        for ni in self.nitros:
+            if ni.check_reach_edge():
+                self.nitros.remove(ni)
+            else:
+                ni.update()
+        print("obstacles : ",self.obstacles,"nitros : ",self.nitros)
         # =========================================================
         # COLLISION
         # =========================================================
@@ -169,8 +175,8 @@ class Game:
             for ob in self.obstacles.sprites():
                 ob.draw_object()
 
-            # [NITRO TEAM]
-            # Draw active Nitro.
+            for ni in self.nitros.sprites():
+                ni.draw_object()
 
             # [BOOST / MOTION EFFECT TEAM]
             # Draw boost and motion effects.

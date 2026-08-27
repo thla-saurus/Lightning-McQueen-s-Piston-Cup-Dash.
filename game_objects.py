@@ -23,7 +23,11 @@ class GameObject(Sprite):
     self.lane_index = lane_index
     self.item_type = item_type
 
-    self.image = choice(game.assets.images)
+    if item_type == "obstacle":
+        self.image = choice(game.assets.obstacle_images)
+    else:
+        self.image = game.assets.power_up_image
+      
     self.x = ((lane_index * self.settings.LANE_WIDTH) + (self.settings.LANE_WIDTH // 2) - (ITEM_WIDTH // 2))+44
     self.y = -ITEM_HEIGHT  # Start spawning from above the screen boundary
 
@@ -37,18 +41,10 @@ class GameObject(Sprite):
 
   def draw_object(self):
     # Render the game object on the screen
-    if self.item_type == "obstacle":
-      
       img_rect = self.image.get_rect()
       img_rect.x = self.x
       img_rect.y = self.y
       self.window.blit(self.image,img_rect)
-
-    else:
-      # Draw nitro power-up using global color and dimensions
-      pygame.draw.rect(
-          self.window, COLOR_NITRO, (self.x, self.y, self.width, self.height)
-      )
 
   def check_collision(self, player_rect):
     # Check if this item collides with the player's rectangle
@@ -57,4 +53,11 @@ class GameObject(Sprite):
 
     # colliderect returns True if the two rectangles overlap (collide), False otherwise
     return item_rect.colliderect(player_rect)
+
+  def check_reach_edge(self):
+     print(self.y, self.window.get_rect().bottom)
+     if self.y>=self.window.get_rect().bottom:
+  
+        return True
+     return False
   
