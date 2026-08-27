@@ -88,8 +88,9 @@ class Game:
         # [MOTION EFFECT]
         # Initialize the motion trail/blur system here.
 
-        # [GAME OVER + RESTART]
-        # Initialize the Game Over/Restart system here.
+        game_over= False
+        # gameover font
+        self.font = pygame.font.Font(None,50)
 
         # setup shared memory with hand detection process
         self.shm = SharedMemory(name = "lane_number_shm")
@@ -104,6 +105,14 @@ class Game:
                 self.obstacles.add(GameObject(random.randint(0,self.settings.NUM_LANES-1),"obstacle",self))
             if event.type == self.spawn_power_up_event:
                 self.nitros.add(GameObject(random.randint(0,self.settings.NUM_LANES-1),"power_up",self))
+            if event.type == self.spawn_power_up_event:
+                self.nitros.add(GameObject(random.randint(0,self.settings.NUM_LANES-1),"power_up",self))
+            if event.type == pygame.KEYDOWN:
+                if self.state == "GAME_OVER":
+                    if event.key == pygame.K_r:
+                        self.restart_game()
+                        self.state= "PLAYING"
+                        self.game_over =False
 
     # continously update game (car speed, number of lanes, which lane it's in, obstacles, nitro, lifes)
     def update(self, dt):
@@ -136,6 +145,9 @@ class Game:
                 self.stats.score_up(-10)
                 if self.stats.score < 0:
                     self.stats.score = 0
+                if self.check_game_over(self.stats.lives):
+                    self.game_over=True
+                    self.state = "GAME_OVER"
             else:
                 print("boost active, no life lost")
                 self.stats.score_up(30)       
@@ -168,7 +180,6 @@ class Game:
                 self.boost.activate()
 
         self.boost.update()  
-
         # =========================================================
         # MOTION EFFECT
         # =========================================================
@@ -194,7 +205,47 @@ class Game:
         # the Game Over state. change the game state if lives become zero
         #     self.state = "GAME_OVER"
         # Do NOT reset the game here.
-        pass
+    def check_game_over(self,lives):
+        return lives <= 0     ##check the lives number return T or F
+    
+    def show_game_over( self): ##screen show
+        overlay = pygame.Surface(self.window.get_size())
+        overlay.set_alpha(180)
+        overlay.fill((0, 0, 0))
+        self.window.blit(overlay, (0, 0)) ## show el overlay
+
+        # GAME OVER
+        text = self.font.render("GAME OVER", True, (255, 255, 255)) ## write game over
+        self.window.blit(text, (500, 300))
+
+       # score
+        score_text = self.font.render(
+           f"Score: {self.stats.score}",
+            True,
+            (255, 255, 255)
+              )
+        self.window.blit(score_text, (500, 350))  ## show text
+
+        # restart 
+        restart_text = self.font.render(
+           "Press R to Restart",
+            True,
+            (255, 255, 255)
+         )  
+        self.window.blit(restart_text, (450, 400)) ## show text
+
+    def restart_game (self):
+        self.stats.score =0
+        self.stats.lives=3
+        self.stats.nitro=0
+
+        self.obstacles.empty() ## remove old objects
+        self.nitros.empty()
+
+        self.boost = Boost(duration=3 ,boost_multiplier=2) ##reset boost
+        self.player.reset()##reset player
+        self.game_over=False
+        self.state="PLAYING"
 
     def draw(self):
         # =========================================================
@@ -230,15 +281,12 @@ class Game:
 
         elif self.state == "GAME_OVER":
 
-            # =====================================================
-            # GAME OVER DISPLAY
-            # =====================================================
+            self.show_game_over(
+                self.window,
+                self.font,
+                self.stats.score
+                        )
 
-            # [GAME OVER + RESTART TEAM]
-            # Draw the Game Over screen.
-            # Display final score and restart instructions.
-            # The Game Over system owns the actual visual design.
-            pass
         pygame.display.update()
 
     # Game loop
