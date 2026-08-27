@@ -13,7 +13,7 @@ CAPTURE_END = 550
 num_of_lanes = Settings().NUM_LANES
 slope  = -(num_of_lanes-1)/(CAPTURE_END-CAPTURE_START)
 y_intercept = slope*-CAPTURE_END
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(1)
 
 
 cap_w = cap.get(cv2.CAP_PROP_FRAME_WIDTH)

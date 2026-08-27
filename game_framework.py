@@ -147,10 +147,7 @@ class Game:
                     self.stats.score = 0
                 if self.check_game_over(self.stats.lives):
                     self.game_over=True
-                    self.state = "GAME_OVER"
-            else:
-                print("boost active, no life lost")
-                self.stats.score_up(30)       
+                    self.state = "GAME_OVER"  
             # implement obstacle car collision logic
 
         if pygame.sprite.spritecollide(self.player,self.nitros, True):
@@ -255,7 +252,7 @@ class Game:
         # DRAW GAME WORLD
         # =========================================================
         self.window.blit(self.background, (0, 0))
-
+        self.player.draw_player(is_invulnerable=self.boost.is_active())
         if self.state == "PLAYING":
 
             # =====================================================
