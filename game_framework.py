@@ -8,6 +8,8 @@ from multiprocessing.shared_memory import SharedMemory
 import numpy as np
 from system import Gamesystem
 from boost import Boost
+from Difficulty import DifficultyManager
+from Score import LeaderboardManager
 
 # include your class file
 # from file name import class name
@@ -52,6 +54,18 @@ class Game:
         # TEAM SYSTEMS
         # =========================================================
 
+        # [DIFFICULTY + LEADERBOARD]
+        self.difficulty_manager = DifficultyManager()
+        self.leaderboard_manager = LeaderboardManager() 
+        #font
+        pygame.font.init()
+        self.font = pygame.font.SysFont("Arial", 26, bold=True)
+
+        obstacle_time = self.difficulty_manager.get_obstacle_interval()
+        nitro_time = self.difficulty_manager.get_nitro_interval()
+
+
+        
         # [HAND + YOLO]
         # Initialize the camera/detection system here.
 
@@ -59,15 +73,15 @@ class Game:
 
         self.obstacles = pygame.sprite.Group()
         self.spawn_obstacle_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.spawn_obstacle_event,1000)
+        pygame.time.set_timer(self.spawn_obstacle_event,obstacle_time)
 
 
         self.nitros = pygame.sprite.Group()
         self.spawn_power_up_event = pygame.USEREVENT + 2
-        pygame.time.set_timer(self.spawn_power_up_event,3000)
+        pygame.time.set_timer(self.spawn_power_up_event,nitro_time)
 
         # [COLLISION]
-        # Initialize the collision system here.
+        # Collision is handled dynamically in update() using GameObject.check_collision()
 
         # [SCORE + LIVES]
         # Initialize the Score/Lives/Nitro-counter system here.
@@ -80,9 +94,6 @@ class Game:
 
         # [GAME OVER + RESTART]
         # Initialize the Game Over/Restart system here.
-
-        # [DIFFICULTY + LEADERBOARD]
-        # Initialize the difficulty and leaderboard systems here.
 
         # setup shared memory with hand detection process
         self.shm = SharedMemory(name = "lane_number_shm")
@@ -147,6 +158,8 @@ class Game:
         # Update score/lives/Nitro counter based on game events.
 
         self.stats.score_up(int(dt * 10))  #increase score over time
+        final_score = self.stats.score
+        self.leaderboard_manager.check_and_update(final_score)
 
         # =========================================================
         # KACHOW BOOST
@@ -169,8 +182,14 @@ class Game:
         # =========================================================
         # DIFFICULTY
         # =========================================================
-        # [DIFFICULTY TEAM]
-        # Apply customizable/progressive difficulty.
+        self.difficulty_manager.update_difficulty()
+        current_speed = self.difficulty_manager.get_current_speed()
+
+        for ob in self.obstacles:
+            ob.speed = current_speed
+        for ni in self.nitros:
+            ni.speed = current_speed
+        
 
         # =========================================================
         # GAME STATE / GAME OVER
