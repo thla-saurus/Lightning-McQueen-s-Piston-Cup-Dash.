@@ -6,6 +6,8 @@ from player import Car
 import random
 from multiprocessing.shared_memory import SharedMemory
 import numpy as np
+from system import Gamesystem
+from boost import Boost
 
 # include your class file
 # from file name import class name
@@ -21,6 +23,9 @@ class Game:
 
         # initiate assets object
         self.assets = Assets()
+
+        self.stats = Gamesystem(self)
+        self.boost = Boost(duration=3, boost_multiplier=2)
 
 
 
@@ -117,12 +122,22 @@ class Game:
             else:
                 ni.update()
 
-        if pygame.sprite.spritecollideany(self.player,self.obstacles):
+        if pygame.sprite.spritecollide(self.player,self.obstacles, True):
             print(" i am hit obstacle")
+            if not self.boost.is_active():
+                self.stats.lose_life()
+                self.stats.score_up(-10)
+                if self.stats.score < 0:
+                    self.stats.score = 0
+            else:
+                print("boost active, no life lost")
+                self.stats.score_up(30)       
             # implement obstacle car collision logic
 
-        if pygame.sprite.spritecollideany(self.player,self.nitros):
+        if pygame.sprite.spritecollide(self.player,self.nitros, True):
             print(" i got nitro")
+            self.stats.nitro_boost_up()
+            self.stats.score_up(20)
             # implement nitro car collision logic
 
         # =========================================================
@@ -131,11 +146,19 @@ class Game:
         # [SCORE/LIVES TEAM]
         # Update score/lives/Nitro counter based on game events.
 
+        self.stats.score_up(int(dt * 10))  #increase score over time
+
         # =========================================================
         # KACHOW BOOST
         # =========================================================
         # [BOOST TEAM]
         # Process Peace Sign detection and Boost behavior.
+        peace_sign_detected = bool(self.buffer[1])
+        if peace_sign_detected and not self.boost.is_active():
+            if self.stats.use_nitro():  # بتفحص إذا فيه نيترو وتخصم 1 فوراً وتجيب True
+                self.boost.activate()
+
+        self.boost.update()  
 
         # =========================================================
         # MOTION EFFECT
@@ -183,6 +206,7 @@ class Game:
 
             # [SCORE + LIVES TEAM]
             # Draw score, lives and Nitro counter.
+            self.stats.draw()
 
             # [DIFFICULTY / LEADERBOARD TEAM]
             # Draw leaderboard/high score if required.
