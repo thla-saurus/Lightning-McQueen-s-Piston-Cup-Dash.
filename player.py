@@ -23,7 +23,6 @@ class Car:
         self.width = self.base_image.get_width()
         self.height = self.base_image.get_height()
 
-
         start_lane = self.settings.NUM_LANES // 2
         self.lane_index = start_lane
         self.x = self._lane_target_x(start_lane)
@@ -49,6 +48,7 @@ class Car:
         force = (target_x - self.x) * SPRING_STIFFNESS # Calc distance to target lane and apply spring stiffness to get the force
         self.velocity_x += (force - self.velocity_x * SPRING_DAMPING) * DT # update the velocity
         self.x += self.velocity_x * DT # Move X coorrdinate
+        self.rect = self.get_rect()
 
     # COLLISION HITBOX FIX:
     # We generate a fresh, invisible box here instead of updating a saved self.rect.
@@ -65,6 +65,7 @@ class Car:
         start_lane = self.settings.NUM_LANES // 2
         self.lane_index = start_lane
         self.x = self._lane_target_x(start_lane)
+        self.rect = self.get_rect
         self.velocity_x = 0.0
 
     # Visuals

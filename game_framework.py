@@ -216,7 +216,8 @@ class Game:
 
         # GAME OVER
         text = self.font.render("GAME OVER", True, (255, 255, 255)) ## write game over
-        self.window.blit(text, (500, 300))
+        text_rect = text.get_rect(center=(self.settings.SCREEN_WIDTH/2, self.settings.SCREEN_HEIGHT/2,))
+        self.window.blit(text,text_rect)
 
        # score
         score_text = self.font.render(
@@ -224,7 +225,8 @@ class Game:
             True,
             (255, 255, 255)
               )
-        self.window.blit(score_text, (500, 350))  ## show text
+        score_text_rect = text.get_rect(center=(self.settings.SCREEN_WIDTH/2, (self.settings.SCREEN_HEIGHT/2)+50))
+        self.window.blit(score_text, score_text_rect)  ## show text
 
         # restart 
         restart_text = self.font.render(
@@ -232,7 +234,8 @@ class Game:
             True,
             (255, 255, 255)
          )  
-        self.window.blit(restart_text, (450, 400)) ## show text
+        restart_text_rect = text.get_rect(center=(self.settings.SCREEN_WIDTH/2, (self.settings.SCREEN_HEIGHT/2)+100))
+        self.window.blit(restart_text, restart_text_rect) ## show text
 
     def restart_game (self):
         self.stats.score =0
@@ -280,12 +283,7 @@ class Game:
             pass
 
         elif self.state == "GAME_OVER":
-
-            self.show_game_over(
-                self.window,
-                self.font,
-                self.stats.score
-                        )
+            self.show_game_over()
 
         pygame.display.update()
 
