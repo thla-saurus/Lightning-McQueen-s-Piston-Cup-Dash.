@@ -6,9 +6,8 @@ class LeaderboardManager:
   def __init__(self, filename="scores.txt"):
     self.filename = filename
     self.high_score = self.load_high_score()
-    self.current_score = self.get_current_score()
+    self.current_score = 0
     
-
   def load_high_score(self):
     # Read the high score from the text file if it exists
     if os.path.exists(self.filename):

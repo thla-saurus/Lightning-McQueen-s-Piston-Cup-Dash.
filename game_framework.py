@@ -25,14 +25,13 @@ class Game:
 
         # initiate assets object
         self.assets = Assets()
-
-        self.stats = Gamesystem(self)
+        
         self.boost = Boost(duration=3, boost_multiplier=2)
-
-
 
         # Set up the game window
         self.window = pygame.display.set_mode((WIDTH, HEIGHT))  # dimensions
+
+        self.stats = Gamesystem(self)
         self.original = pygame.image.load(
             "pistoncup track.png"
         )   # loading the background image
@@ -79,9 +78,6 @@ class Game:
         self.nitros = pygame.sprite.Group()
         self.spawn_power_up_event = pygame.USEREVENT + 2
         pygame.time.set_timer(self.spawn_power_up_event,nitro_time)
-
-        # [COLLISION]
-        # Collision is handled dynamically in update() using GameObject.check_collision()
 
         # [SCORE + LIVES]
         # Initialize the Score/Lives/Nitro-counter system here.
