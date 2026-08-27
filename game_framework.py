@@ -4,10 +4,12 @@ from game_objects import GameObject
 from game_assets import Assets
 from player import Car
 import random
+from multiprocessing.shared_memory import SharedMemory
+import numpy as np
 
 # include your class file
 # from file name import class name
-
+MEMORY_SIZE = 4
 
 class Game:
     # Initialize Pygame
@@ -77,6 +79,9 @@ class Game:
         # [DIFFICULTY + LEADERBOARD]
         # Initialize the difficulty and leaderboard systems here.
 
+        # setup shared memory with hand detection process
+        self.shm = SharedMemory(name = "lane_number_shm")
+        self.buffer = np.ndarray((MEMORY_SIZE),dtype=np.uint8,buffer=self.shm.buf)
 
     def handle_events(self):
         # first event: quitting game
@@ -97,8 +102,9 @@ class Game:
         # [HAND DETECTION TEAM]
         # Get the latest gesture and hand-position result.
         # Pass the relevant result to the McQueen/Lane system.
-
-        self.player.check_new_position(lane_index=2)
+        
+        print(self.buffer[0])
+        self.player.check_new_position(lane_index=int(self.buffer[0]))
 
         for ob in self.obstacles:
             if ob.check_reach_edge():
@@ -111,7 +117,6 @@ class Game:
                 self.nitros.remove(ni)
             else:
                 ni.update()
-        print("obstacles : ",self.obstacles,"nitros : ",self.nitros)
         # =========================================================
         # COLLISION
         # =========================================================

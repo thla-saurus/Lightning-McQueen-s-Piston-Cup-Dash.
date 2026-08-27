@@ -60,7 +60,6 @@ class GameObject(Sprite):
     return item_rect.colliderect(player_rect)
 
   def check_reach_edge(self):
-     print(self.y, self.window.get_rect().bottom)
      if self.y>=self.window.get_rect().bottom:
   
         return True
