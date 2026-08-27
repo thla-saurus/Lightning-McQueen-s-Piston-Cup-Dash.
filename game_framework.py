@@ -2,6 +2,7 @@ import pygame
 from settings import Settings
 from game_objects import GameObject
 from game_assets import Assets
+from player import Car
 import random
 
 # include your class file
@@ -47,17 +48,16 @@ class Game:
         # [HAND + YOLO]
         # Initialize the camera/detection system here.
 
-        # [LANES + McQUEEN]
-        # Initialize the lane and McQueen systems here.
+        self.player = Car(self)
 
         self.obstacles = pygame.sprite.Group()
         self.spawn_obstacle_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.spawn_obstacle_event,100)
+        pygame.time.set_timer(self.spawn_obstacle_event,1000)
 
 
         self.nitros = pygame.sprite.Group()
         self.spawn_power_up_event = pygame.USEREVENT + 2
-        pygame.time.set_timer(self.spawn_power_up_event,100)
+        pygame.time.set_timer(self.spawn_power_up_event,3000)
 
         # [COLLISION]
         # Initialize the collision system here.
@@ -98,12 +98,7 @@ class Game:
         # Get the latest gesture and hand-position result.
         # Pass the relevant result to the McQueen/Lane system.
 
-        # =========================================================
-        # McQUEEN + LANES
-        # =========================================================
-        # [McQUEEN/LANES TEAM]
-        # Use the hand-position result to determine McQueen's lane.
-        # Update McQueen's position.
+        self.player.check_new_position(lane_index=2)
 
         for ob in self.obstacles:
             if ob.check_reach_edge():
@@ -169,8 +164,7 @@ class Game:
             # NORMAL GAME DISPLAY
             # =====================================================
 
-            # [LANES + McQUEEN TEAM]
-            # Draw lanes and McQueen.
+            self.player.draw_player()
 
             for ob in self.obstacles.sprites():
                 ob.draw_object()
