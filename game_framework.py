@@ -52,12 +52,12 @@ class Game:
 
         self.obstacles = pygame.sprite.Group()
         self.spawn_obstacle_event = pygame.USEREVENT + 1
-        pygame.time.set_timer(self.spawn_obstacle_event,1000)
+        pygame.time.set_timer(self.spawn_obstacle_event,100)
 
 
         self.nitros = pygame.sprite.Group()
         self.spawn_power_up_event = pygame.USEREVENT + 2
-        pygame.time.set_timer(self.spawn_power_up_event,3000)
+        pygame.time.set_timer(self.spawn_power_up_event,100)
 
         # [COLLISION]
         # Initialize the collision system here.
@@ -84,9 +84,9 @@ class Game:
             if event.type == pygame.QUIT:
                 self.running = False
             if event.type == self.spawn_obstacle_event:
-                self.obstacles.add(GameObject(random.randint(0,5),"obstacle",self))
+                self.obstacles.add(GameObject(random.randint(0,self.settings.NUM_LANES-1),"obstacle",self))
             if event.type == self.spawn_power_up_event:
-                self.nitros.add(GameObject(random.randint(0,5),"power_up",self))
+                self.nitros.add(GameObject(random.randint(0,self.settings.NUM_LANES-1),"power_up",self))
 
     # continously update game (car speed, number of lanes, which lane it's in, obstacles, nitro, lifes)
     def update(self, dt):

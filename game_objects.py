@@ -27,8 +27,13 @@ class GameObject(Sprite):
         self.image = choice(game.assets.obstacle_images)
     else:
         self.image = game.assets.power_up_image
-      
-    self.x = ((lane_index * self.settings.LANE_WIDTH) + (self.settings.LANE_WIDTH // 2) - (ITEM_WIDTH // 2))+44
+
+    self.x = 0
+    shift_right = 53
+    if lane_index == 0:
+       self.x = shift_right
+    else:
+       self.x = ((lane_index * self.settings.LANE_WIDTH) + (self.settings.LANE_WIDTH // 2) - (ITEM_WIDTH // 2))+(shift_right*lane_index) +shift_right
     self.y = -ITEM_HEIGHT  # Start spawning from above the screen boundary
 
     self.width = ITEM_WIDTH
