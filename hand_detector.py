@@ -46,6 +46,7 @@ try:
         # 4. Run real-time inference on the active 'frame' array
         # stream=True optimizes memory management for live feeds
         results = model.predict(source=frame, imgsz=640, conf=0.5, stream=True,verbose= False)
+        peace_detected = 0
 
         # 5. Extract results and plot the bounding boxes onto the frame
         for result in results:
@@ -55,8 +56,13 @@ try:
                 lane_number = int(slope*x_center+y_intercept)
                 buffer[0] = lane_number
                 print(buffer[0])
+                #peace sign detection
+                class_id = int(box.cls[0])
+                if class_id == 0:
+                    peace_detected = 1
             # 6. Display the live annotated video feed
             cv2.imshow("YOLO Detection", annotated_frame)
+        buffer[1] = peace_detected    
 
         # 7. Check if the user pressed the 'q' key to quit
         
