@@ -103,7 +103,6 @@ class Game:
         # Get the latest gesture and hand-position result.
         # Pass the relevant result to the McQueen/Lane system.
         
-        print(self.buffer[0])
         self.player.check_new_position(lane_index=int(self.buffer[0]))
 
         for ob in self.obstacles:
@@ -117,12 +116,14 @@ class Game:
                 self.nitros.remove(ni)
             else:
                 ni.update()
-        # =========================================================
-        # COLLISION
-        # =========================================================
-        # [COLLISION TEAM]
-        # Check interactions between McQueen and relevant objects.
-        # Provide the collision result to the Score/Lives system.
+
+        if pygame.sprite.spritecollideany(self.player,self.obstacles):
+            print(" i am hit obstacle")
+            # implement obstacle car collision logic
+
+        if pygame.sprite.spritecollideany(self.player,self.nitros):
+            print(" i got nitro")
+            # implement nitro car collision logic
 
         # =========================================================
         # SCORE + LIVES + NITRO COUNTER

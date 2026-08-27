@@ -8,9 +8,6 @@ ITEM_HEIGHT = 40
 ITEM_SPEED = 5
 SPAWN_INTERVAL = 60  # Frames between each new spawn (FPS)
 
-# Colors (RGB)
-COLOR_NITRO = (0, 200, 255)  # Light Blue
-
 
 class GameObject(Sprite):
 
@@ -25,9 +22,11 @@ class GameObject(Sprite):
 
     if item_type == "obstacle":
         self.image = choice(game.assets.obstacle_images)
+        
     else:
         self.image = game.assets.power_up_image
 
+    self.rect = self.image.get_rect()
     self.x = 0
     shift_right = 53
     if lane_index == 0:
@@ -46,18 +45,9 @@ class GameObject(Sprite):
 
   def draw_object(self):
     # Render the game object on the screen
-      img_rect = self.image.get_rect()
-      img_rect.x = self.x
-      img_rect.y = self.y
-      self.window.blit(self.image,img_rect)
-
-  def check_collision(self, player_rect):
-    # Check if this item collides with the player's rectangle
-    # Creates a Pygame Rect for the current item
-    item_rect = pygame.Rect(self.x, self.y, self.width, self.height)
-
-    # colliderect returns True if the two rectangles overlap (collide), False otherwise
-    return item_rect.colliderect(player_rect)
+      self.rect.x = self.x
+      self.rect.y = self.y
+      self.window.blit(self.image,self.rect)
 
   def check_reach_edge(self):
      if self.y>=self.window.get_rect().bottom:
